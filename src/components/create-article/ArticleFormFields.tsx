@@ -63,10 +63,10 @@ const ArticleFormFields: FC<ArticleFormFieldsProps> = ({
             onChange={handleInputChange}
             placeholder="Write a brief summary of your article..."
             className="min-h-[100px] resize-none pr-10 glass-panel focus:border-primary/50"
-            maxLength={200}
+            maxLength={300}
           />
           <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
-            {form.excerpt.length}/200
+            {form.excerpt.length}/300
           </div>
         </div>
       </div>

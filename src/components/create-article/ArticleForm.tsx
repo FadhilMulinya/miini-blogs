@@ -1,17 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { FileText, Image, Loader2, CheckCircle, ExternalLink, Copy } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useWallet } from "@/context/WalletContext";
-import CoverImageUpload from "./CoverImageUpload";
-import InfoCards from "./InfoCards";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ArticleFormData } from "@/types/article";
 import { publishArticleToIPFS, deployToBlockchain } from "@/utils/articleUtils";
 import IPFSSuccessCard from "./IPFSSuccessCard";
@@ -80,11 +72,15 @@ const ArticleForm = () => {
     
     try {
       setPublishStage("Uploading to IPFS...");
+      
+      // Use the updated publishArticleToIPFS function that works with our JWT-authenticated Pinata SDK
       const result = await publishArticleToIPFS(form, address);
       
       setIpfsHash(result.ipfsHash);
       setIpfsUrl(result.ipfsUrl);
       setQualityScore(result.qualityScore);
+      
+      toast.success("Article successfully published to IPFS!");
       
     } catch (error) {
       console.error("Error publishing article:", error);
