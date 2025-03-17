@@ -2,8 +2,8 @@
 // This is a simplified Pinata SDK integration
 // In production, you'd use the actual Pinata SDK with proper authentication
 
-const PINATA_API_KEY = "YOUR_PINATA_API_KEY";
-const PINATA_SECRET_API_KEY = "YOUR_PINATA_SECRET_API_KEY";
+const PINATA_API_KEY = "bc46fc29f5eb111d52be";
+const PINATA_SECRET_API_KEY = "8ae92308edae3382a85bcfa62f8aa1438a09251eae09933743e106923019ea8b";
 
 interface PinataOptions {
   pinataMetadata?: {
@@ -53,7 +53,7 @@ export async function pinFileToIPFS(file: File, options?: PinataOptions) {
     
     return {
       success: true,
-      pinataUrl: `https://gateway.pinata.cloud/ipfs/${fakeCID}`,
+      pinataUrl: `https://coral-immense-wasp-225.mypinata.cloud/ipfs/${fakeCID}`,
       ipfsHash: fakeCID
     };
   } catch (error) {
