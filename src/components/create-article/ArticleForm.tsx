@@ -1,24 +1,15 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 import { useWallet } from "@/context/WalletContext";
 import { ArticleFormData } from "@/types/article";
-import { publishArticleToIPFS, deployToBlockchain } from "@/utils/articleUtils";
-import IPFSSuccessCard from "./IPFSSuccessCard";
+import { publishArticleToIPFS } from "@/utils/articleUtils";
 import ArticleFormFields from "./ArticleFormFields";
+import PublishedArticleView from "./PublishedArticleView";
 
 const ArticleForm = () => {
-  const navigate = useNavigate();
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStage, setPublishStage] = useState<string>("");
-  const [ipfsHash, setIpfsHash] = useState<string | null>(null);
-  const [ipfsUrl, setIpfsUrl] = useState<string | null>(null);
-  const [isDeployingToBlockchain, setIsDeployingToBlockchain] = useState(false);
-  const [blockchainTxHash, setBlockchainTxHash] = useState<string | null>(null);
-  const [qualityScore, setQualityScore] = useState<number | null>(null);
-  const [tokensEarned, setTokensEarned] = useState<number | null>(null);
+  const [publishedArticle, setPublishedArticle] = useState<any>(null);
   const { address, isConnected } = useWallet();
   
   const [form, setForm] = useState<ArticleFormData>({
@@ -34,6 +25,19 @@ const ArticleForm = () => {
     "Blockchain", "Tokenomics", "Technology", "Community", 
     "Smart Contracts", "Privacy", "IPFS", "Web3"
   ];
+
+  // Check if we have a published article in localStorage on mount
+  useEffect(() => {
+    const savedArticle = localStorage.getItem('publishedArticle');
+    if (savedArticle) {
+      try {
+        setPublishedArticle(JSON.parse(savedArticle));
+      } catch (e) {
+        console.error("Error parsing saved article", e);
+        localStorage.removeItem('publishedArticle');
+      }
+    }
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -72,13 +76,28 @@ const ArticleForm = () => {
     
     try {
       setPublishStage("Uploading to IPFS...");
+      console.log("Starting IPFS upload process...");
       
-      // Use the updated publishArticleToIPFS function that works with our JWT-authenticated Pinata SDK
       const result = await publishArticleToIPFS(form, address);
+      console.log("IPFS upload complete, result:", result);
       
-      setIpfsHash(result.ipfsHash);
-      setIpfsUrl(result.ipfsUrl);
-      setQualityScore(result.qualityScore);
+      // Save the entire published article info
+      const publishedData = {
+        ipfsHash: result.ipfsHash,
+        ipfsUrl: result.ipfsUrl,
+        qualityScore: result.qualityScore,
+        title: form.title,
+        excerpt: form.excerpt || form.content.substring(0, 150) + "...",
+        content: form.content,
+        category: form.category,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Save to localStorage
+      localStorage.setItem('publishedArticle', JSON.stringify(publishedData));
+      
+      // Update state to show success view
+      setPublishedArticle(publishedData);
       
       toast.success("Article successfully published to IPFS!");
       
@@ -91,33 +110,9 @@ const ArticleForm = () => {
     }
   };
 
-  const handleDeployToBlockchain = async () => {
-    if (!ipfsHash || !qualityScore || !address) return;
-    
-    setIsDeployingToBlockchain(true);
-    
-    try {
-      const blockchainResponse = await deployToBlockchain(
-        ipfsHash,
-        qualityScore,
-        form,
-        address
-      );
-      
-      setBlockchainTxHash(blockchainResponse.transactionHash);
-      setTokensEarned(blockchainResponse.tokensEarned);
-      
-      toast.success(`Article published to blockchain! You earned ${blockchainResponse.tokensEarned} MINI tokens`);
-      
-    } catch (error) {
-      console.error("Error deploying to blockchain:", error);
-      toast.error("Failed to deploy to blockchain. Please try again.");
-    } finally {
-      setIsDeployingToBlockchain(false);
-    }
-  };
-
-  const resetForm = () => {
+  const handleReset = () => {
+    setPublishedArticle(null);
+    localStorage.removeItem('publishedArticle');
     setForm({
       title: "",
       excerpt: "",
@@ -126,39 +121,31 @@ const ArticleForm = () => {
       coverImage: null,
       coverImagePreview: ""
     });
-    setIpfsHash(null);
-    setIpfsUrl(null);
-    setBlockchainTxHash(null);
-    setQualityScore(null);
-    setTokensEarned(null);
   };
 
+  // Render either the success view or the form
+  if (publishedArticle) {
+    return <PublishedArticleView 
+      article={publishedArticle} 
+      address={address}
+      isConnected={isConnected}
+      onNewArticle={handleReset}
+    />;
+  }
+
+  // Otherwise, render the form
   return (
     <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
-      {ipfsHash && ipfsUrl && qualityScore ? (
-        <IPFSSuccessCard
-          ipfsHash={ipfsHash}
-          ipfsUrl={ipfsUrl}
-          qualityScore={qualityScore}
-          blockchainTxHash={blockchainTxHash}
-          tokensEarned={tokensEarned}
-          isDeployingToBlockchain={isDeployingToBlockchain}
-          isConnected={isConnected}
-          onDeployToBlockchain={handleDeployToBlockchain}
-          onCreateNew={resetForm}
-        />
-      ) : (
-        <ArticleFormFields
-          form={form}
-          categories={categories}
-          isPublishing={isPublishing}
-          publishStage={publishStage}
-          isConnected={isConnected}
-          handleInputChange={handleInputChange}
-          handleCategoryChange={handleCategoryChange}
-          handleImageChange={handleImageChange}
-        />
-      )}
+      <ArticleFormFields
+        form={form}
+        categories={categories}
+        isPublishing={isPublishing}
+        publishStage={publishStage}
+        isConnected={isConnected}
+        handleInputChange={handleInputChange}
+        handleCategoryChange={handleCategoryChange}
+        handleImageChange={handleImageChange}
+      />
     </form>
   );
 };

@@ -6,11 +6,21 @@ export const uploadFileDirectlyToIPFS = async (file: File): Promise<string> => {
       throw new Error("No file provided");
     }
     
+    console.log("Uploading file directly to IPFS...");
+    
     // Upload file directly using pinata SDK
-    const { cid } = await pinata.upload.public.file(file);
+    const response = await pinata.upload.public.file(file);
+    console.log("Pinata file upload response:", response);
+    
+    if (!response || !response.cid) {
+      throw new Error("Failed to get CID from Pinata upload");
+    }
+    
+    const cid = response.cid;
     
     // Convert CID to gateway URL
     const url = await pinata.gateways.public.convert(cid);
+    console.log("Gateway URL:", url);
     
     return url;
   } catch (error) {
@@ -21,11 +31,21 @@ export const uploadFileDirectlyToIPFS = async (file: File): Promise<string> => {
 
 export const uploadJSONDirectlyToIPFS = async (jsonData: any): Promise<string> => {
   try {
+    console.log("Uploading JSON directly to IPFS...");
+    
     // Upload JSON directly using pinata SDK
-    const { cid } = await pinata.upload.public.json(jsonData);
+    const response = await pinata.upload.public.json(jsonData);
+    console.log("Pinata JSON upload response:", response);
+    
+    if (!response || !response.cid) {
+      throw new Error("Failed to get CID from Pinata JSON upload");
+    }
+    
+    const cid = response.cid;
     
     // Convert CID to gateway URL
     const url = await pinata.gateways.public.convert(cid);
+    console.log("Gateway URL for JSON:", url);
     
     return url;
   } catch (error) {

@@ -35,4 +35,5 @@ export interface ArticleSubmissionData {
   category: string;
   ipfsHash: string;
   author: string;
+  qualityScore?: number;
 }

@@ -115,10 +115,10 @@ const ProfilePage = () => {
                     variant="outline" 
                     size="sm" 
                     className="w-full" 
-                    onClick={() => window.open(`https://etherscan.io/address/${address}`, '_blank')}
+                    onClick={() => window.open(`https://edu-chain-testnet.blockscout.com/address/${address}`, '_blank')}
                   >
                     <ExternalLink className="mr-2 h-4 w-4" />
-                    View on Etherscan
+                    View on Educhain
                   </Button>
                 </div>
               </CardContent>
@@ -213,10 +213,10 @@ const ProfilePage = () => {
                       variant="outline" 
                       size="sm" 
                       className="w-full" 
-                      onClick={() => window.open(`https://etherscan.io/address/${CONTRACT_ADDRESS}`, '_blank')}
+                      onClick={() => window.open(`https://edu-chain-testnet.blockscout.com/address/${CONTRACT_ADDRESS}`, '_blank')}
                     >
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      View Contract on Etherscan
+                      View Contract on Educhain
                     </Button>
                   </div>
                 </div>

@@ -29,6 +29,12 @@ const IPFSSuccessCard: FC<IPFSSuccessCardProps> = ({
   onDeployToBlockchain,
   onCreateNew
 }) => {
+  console.log("Rendering IPFSSuccessCard with props:", {
+    ipfsHash,
+    ipfsUrl,
+    qualityScore
+  });
+  
   return (
     <Card className="border-primary/20 glass-card">
       <CardHeader>
@@ -118,6 +124,7 @@ const IPFSSuccessCard: FC<IPFSSuccessCardProps> = ({
                 </>
               ) : "Deploy to Blockchain & Earn MINI Tokens"}
             </Button>
+            
             {!isConnected && (
               <p className="text-xs text-muted-foreground mt-2 text-center">
                 Please connect your wallet to deploy to the blockchain
