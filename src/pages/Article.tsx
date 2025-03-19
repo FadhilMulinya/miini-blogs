@@ -91,7 +91,7 @@ const Article = () => {
             <p>The future of content creation is decentralized, putting power back in the hands of creators and their communities. While challenges remain in terms of scalability, user experience, and adoption, the potential benefits make this one of the most exciting applications of blockchain technology.</p>`,
           coverImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1920&auto=format&fit=crop",
           category: "Blockchain",
-          createdAt: "2023-04-15T10:30:00Z",
+          createdAt: "2025-03-15T10:30:00Z",
           author: {
             name: "Alex Johnson",
             avatar: "https://randomuser.me/api/portraits/men/32.jpg",
@@ -112,7 +112,7 @@ const Article = () => {
                 username: "sarahc"
               },
               content: "This is a really insightful article! I've been exploring IPFS lately and it's fascinating how it changes the paradigm of content storage.",
-              createdAt: "2023-04-16T08:45:00Z",
+              createdAt: "2025-03-16T08:45:00Z",
               likes: 12
             },
             {
@@ -123,7 +123,7 @@ const Article = () => {
                 username: "michaelr"
               },
               content: "Great points about tokenomics. I think the alignment of incentives is what makes these platforms so promising compared to traditional models.",
-              createdAt: "2023-04-16T14:20:00Z",
+              createdAt: "2025-03-16T14:20:00Z",
               likes: 8
             }
           ]

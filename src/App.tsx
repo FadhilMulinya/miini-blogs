@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import Articles from "./pages/Articles";
 import Article from "./pages/Article";
 import CreateArticle from "./pages/CreateArticle";
 import Profile from "./pages/Profile";
+import Tokenomics from "./pages/Tokenomics"; // Add this import
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/articles/:id" element={<Article />} />
             <Route path="/create-article" element={<CreateArticle />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/tokenomics" element={<Tokenomics />} /> {/* Add this route */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

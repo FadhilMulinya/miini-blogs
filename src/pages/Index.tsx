@@ -14,7 +14,7 @@ const featuredArticle = {
   excerpt: "Explore how blockchain technology is revolutionizing content creation and distribution, empowering creators with new monetization models and greater control.",
   coverImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1024&auto=format&fit=crop",
   category: "Blockchain",
-  createdAt: "2023-04-15T10:30:00Z",
+  createdAt: "2025-03-15T10:30:00Z",
   author: {
     name: "Alex Johnson",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
@@ -34,7 +34,7 @@ const recentArticles = [
     excerpt: "Learn the fundamentals of token economics and how it shapes the incentives within decentralized ecosystems.",
     coverImage: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?q=80&w=1024&auto=format&fit=crop",
     category: "Tokenomics",
-    createdAt: "2023-04-10T14:20:00Z",
+    createdAt: "2025-03-10T14:20:00Z",
     author: {
       name: "Sarah Chen",
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
@@ -52,7 +52,7 @@ const recentArticles = [
     excerpt: "Discover how IPFS is changing the way we store and share content on the internet, offering resilience and censorship resistance.",
     coverImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1024&auto=format&fit=crop",
     category: "Technology",
-    createdAt: "2023-04-05T09:15:00Z",
+    createdAt: "2025-03-05T09:15:00Z",
     author: {
       name: "Michael Rivera",
       avatar: "https://randomuser.me/api/portraits/men/67.jpg",
@@ -70,7 +70,7 @@ const recentArticles = [
     excerpt: "Explore strategies for building and nurturing engaged communities around decentralized applications.",
     coverImage: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1024&auto=format&fit=crop",
     category: "Community",
-    createdAt: "2023-04-01T16:45:00Z",
+    createdAt: "2025-03-01T16:45:00Z",
     author: {
       name: "Emily Wong",
       avatar: "https://randomuser.me/api/portraits/women/33.jpg",
