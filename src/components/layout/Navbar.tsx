@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Newspaper, Home, ScrollText, LineChart, Menu, X, Edit, User, Settings, LogOut } from "lucide-react"
@@ -14,19 +14,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { NavigationMenuItem } from "@/components/ui/navigation-menu"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
   const location = useLocation()
   const { address, isConnected } = useWallet()
+  const isMobile = useIsMobile()
+  const [isOpen, setIsOpen] = useState(false)
+  const lastScrollY = useRef(0)
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
+      const currentScrollY = window.scrollY
+
+      // Determine if we're scrolling up or down
+      if (currentScrollY > lastScrollY.current + 10) {
+        // Scrolling down - hide the navbar
+        setIsVisible(false)
+      } else if (currentScrollY < lastScrollY.current - 10 || currentScrollY <= 0) {
+        // Scrolling up or at the top - show the navbar
+        setIsVisible(true)
+      }
+
+      // Update scroll position
+      lastScrollY.current = currentScrollY
+
+      // Set scrolled state for styling
+      setIsScrolled(currentScrollY > 10)
     }
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
@@ -47,11 +68,40 @@ const Navbar = () => {
     return false
   }
 
+  const toggleMenu = () => setIsOpen(!isOpen)
+
+  const navItems = (
+    <>
+      <NavigationMenuItem>
+        <Link to="/articles">
+          <Button variant="ghost">Articles</Button>
+        </Link>
+      </NavigationMenuItem>
+      <NavigationMenuItem>
+        <Link to="/create-article">
+          <Button variant="ghost">Create Article</Button>
+        </Link>
+      </NavigationMenuItem>
+      {isConnected && (
+        <NavigationMenuItem>
+          <Link to="/profile">
+            <Button variant="ghost">Profile</Button>
+          </Link>
+        </NavigationMenuItem>
+      )}
+      <NavigationMenuItem>
+        <Link to="/tokenomics">
+          <Button variant="ghost">Tokenomics</Button>
+        </Link>
+      </NavigationMenuItem>
+    </>
+  )
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
-        isScrolled ? "bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 transform ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white"}`}
     >
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
@@ -95,6 +145,7 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            {/* Show WalletConnect for all users */}
             <div className="hidden md:block">
               <WalletConnect />
             </div>
@@ -109,47 +160,50 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 rounded-full hover:bg-transparent">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md">
-                    <img src="/public/pfp.jpg" alt="Profile" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+            {/* Only show profile dropdown when connected */}
+            {isConnected ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="p-0 rounded-full hover:bg-transparent">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md">
+                      <img src="/pfp.jpg" alt="Profile" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl shadow-lg border border-blue-100">
+                  <div className="flex items-center gap-3 p-2 mb-1">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-100">
+                      <img src="/pfp.jpg" alt="Profile" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-sm">Fadhil Mulinya</span>
+                      <span className="text-xs text-gray-500">
+                        {shortenAddress(address)}
+                      </span>
+                    </div>
                   </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl shadow-lg border border-blue-100">
-                <div className="flex items-center gap-3 p-2 mb-1">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-100">
-                    <img src="/public/pfp.jpg" alt="Profile" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-sm">John Doe</span>
-                    <span className="text-xs text-gray-500">
-                      {isConnected ? shortenAddress(address) : "Not connected"}
-                    </span>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="py-2 cursor-pointer">
-                  <Link to="/profile" className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-blue-500" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-2 cursor-pointer">
-                  <Link to="/settings" className="flex items-center gap-2">
-                    <Settings className="h-4 w-4 text-blue-500" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="py-2 cursor-pointer text-red-500 hover:text-red-600">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="py-2 cursor-pointer">
+                    <Link to="/profile" className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-blue-500" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="py-2 cursor-pointer">
+                    <Link to="/settings" className="flex items-center gap-2">
+                      <Settings className="h-4 w-4 text-blue-500" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="py-2 cursor-pointer text-red-500 hover:text-red-600">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
 
             {/* Mobile menu button */}
             <Button

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2, ExternalLink, Copy, CheckCircle2, Sparkles, Award, Zap, Wallet, Users, Code } from "lucide-react"
 import { EDU_CHAIN_CONFIG } from "@/lib/blockchain"
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import Navbar from "@/components/layout/Navbar"
 import { motion } from "framer-motion"
 
 // Local mock data for tokenomics
@@ -115,6 +116,7 @@ export default function Tokenomics() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
+      <Navbar />
       <Container className="py-16">
         <div className="space-y-12">
           {/* Hero Section */}
