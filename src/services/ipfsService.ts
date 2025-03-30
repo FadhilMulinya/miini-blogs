@@ -1,7 +1,7 @@
 import axios from "axios";
 import { PinataParams } from "@/types/article";
 
-// Function to upload file to IPFS using Pinata
+// Function to upload file to IPFS using pinata sdk
 export const pinFileToIPFS = async (file: File, options: PinataParams = {}) => {
   const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
   
@@ -67,5 +67,6 @@ export const pinJSONToIPFS = async (jsonData: any, options: PinataParams = {}) =
   } catch (error) {
     console.error("Error uploading JSON to IPFS:", error);
     throw error;
+
   }
 };
